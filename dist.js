@@ -163,8 +163,8 @@ drake.on('out', (card, pile) => {
 });
 
 var BLUE = '#4682b4';
-var YELLOW = '#FFEF00';
-var RED = '#DA2C43';
+var YELLOW = '#fde396';
+var RED = '#c23b22';
 
 var palette = shuffle([[YELLOW, RED], [YELLOW, BLUE], [BLUE, RED]])[0];
 var hi = palette[1];
