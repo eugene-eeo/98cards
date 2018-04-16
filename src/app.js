@@ -1,4 +1,5 @@
 $ = nut;
+var hand = $.el('#hand');
 
 function lessThan(card1, card2) {
     if (!card1 || !card2) return true;
@@ -12,15 +13,15 @@ function scoreOf(diff, t) {
 }
 
 var drake = dragula([
-    $.el('#hand'), 
+    hand, 
     $.el('#asc-1'),
     $.el('#asc-2'),
     $.el('#dsc-1'),
     $.el('#dsc-2'),
 ], {
-    moves: (_, target) => target === $.el('#hand'),
+    moves: (_, target) => target === hand,
     accepts: (card, pile) => {
-        if (pile === $.el('#hand') || pile.innerHTML === "") {
+        if (pile === hand || pile.innerHTML === "") {
             return true;
         }
         var top = $.el('.placed', pile);
@@ -31,7 +32,7 @@ var drake = dragula([
 });
 
 drake.on('drop', (el, target, source, sibling) => {
-    if (target === $.el('#hand')) return;
+    if (target === hand) return;
     var top = $.el('.placed', target);
     var val = 0;
     if (top !== null) {
@@ -46,13 +47,11 @@ drake.on('drop', (el, target, source, sibling) => {
 });
 
 drake.on('over', (card, pile) => {
-    if (pile.id === 'hand') return;
     var top = $.el('.placed', pile);
     if (top) top.style.display = 'none';
 });
 
 drake.on('out', (card, pile) => {
-    if (pile.id === 'hand') return;
     var top = $.el('.placed', pile);
     if (top) top.style.display = 'inline-block';
 });
@@ -104,7 +103,7 @@ var xs = shuffle(range(99));
 var times = 0;
 function done() {
     times++;
-    $.el('#remaining').textContent = $.el('#hand').children.length + xs.length;
+    $.el('#remaining').textContent = hand.children.length + xs.length;
     if (times % 2 === 0 && xs.length !== 0) {
         hand.appendChild(drawCard(xs.pop()));
         hand.appendChild(drawCard(xs.pop()));
