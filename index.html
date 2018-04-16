@@ -49,11 +49,28 @@ table, td, tr {
   border-radius: 5px;
 }
 
+button {
+  font: inherit;
+  font-variant: small-caps;
+  border: 0;
+  background-color: #fff;
+  font-size: 0.8em;
+  display: inline-block;
+  text-align: center;
+  color: #999;
+  font-weight: bold;
+}
+
+#undocount {
+  font: inherit;
+}
+
 #hand {
   margin-top: 1em;
   padding-top: 0.2em;
   width: 12em;
   border-top: 2px solid #999;
+  height: calc(2*3.33 + 2*0.4 + 2*0.2);
 }
 
 .card {
@@ -88,20 +105,21 @@ h3 {
   <h3 id='score'>0</h3>
   <table>
     <tr>
-      <td><div class='pile' id="asc-1"></div></td>
+      <td><div class='pile' id="a1"></div></td>
       <td><span class='indicator'>▲</span></td>
       <td><span class='space'></span></td>
       <td><span class='indicator'>▲</span></td>
-      <td><div class='pile' id="asc-2"></div></td>
+      <td><div class='pile' id="a2"></div></td>
     </tr>
     <tr>
-      <td><div class='pile' id="dsc-1"></div>
+      <td><div class='pile' id="d1"></div>
       <td><span class='indicator'>▼</span></td>
       <td><span class='space'></span></td>
       <td><span class='indicator'>▼</span></td>
-      <td><div class='pile' id="dsc-2"></div></td>
+      <td><div class='pile' id="d2"></div></td>
     </tr>
   </table>
   <div id="hand"></div>
+  <center><button id='undo'>undo (<span id='undocount'>0</span>)</button></center>
   <script src='dist.js'></script>
 </body>
