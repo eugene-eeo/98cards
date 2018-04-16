@@ -1,6 +1,7 @@
 <html>
 <head>
   <meta charset="utf8"/>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
   <title>98 cards</title>
   <style>
 .gu-mirror {
@@ -43,10 +44,34 @@ table, td, tr {
 }
 
 .pile {
-  width: 3em;
+  width: 25%;
   height: 4.3em;
   border: 2px solid #999;
   border-radius: 5px;
+  float: left;
+}
+
+.row {
+  margin-bottom: 1em;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.indicator {
+  color: #999;
+  font-weight: bold;
+  float: left;
+  width: calc(25% - 4px);
+  height: 4.3em;
+  text-align: center;
+}
+
+.indicator span {
+  line-height: 4.3em;
 }
 
 button {
@@ -66,14 +91,13 @@ button {
 }
 
 #hand {
-  margin-top: 1em;
   padding-top: 0.2em;
-  width: 12em;
   border-top: 2px solid #999;
-  height: calc(2*3.33 + 2*0.4 + 2*0.2);
+  height: calc(2*3.8em + 2*0.4em + 2*0.2em + 8px);
 }
 
 .card {
+  text-align: left;
   border: 2px solid #000;
   border-radius: 5px;
   font-weight: bold;
@@ -90,16 +114,6 @@ button {
             user-select: none;
 }
 
-.indicator {
-  color: #999;
-  font-weight: bold;
-}
-
-.space {
-  width: 2.9em;
-  display: block;
-}
-
 h3 {
   text-align: center;
   margin-top: 0;
@@ -109,23 +123,19 @@ h3 {
 <body>
   <h2><span id='remaining'></span> cards</h2>
   <h3 id='score'>0</h3>
-  <table>
-    <tr>
-      <td><div class='pile' id="a1"></div></td>
-      <td><span class='indicator'>▲</span></td>
-      <td><span class='space'></span></td>
-      <td><span class='indicator'>▲</span></td>
-      <td><div class='pile' id="a2"></div></td>
-    </tr>
-    <tr>
-      <td><div class='pile' id="d1"></div>
-      <td><span class='indicator'>▼</span></td>
-      <td><span class='space'></span></td>
-      <td><span class='indicator'>▼</span></td>
-      <td><div class='pile' id="d2"></div></td>
-    </tr>
-  </table>
-  <div id="hand"></div>
+  <div class='row'>
+    <div class='pile' id="a1"></div>
+    <div class='indicator'><span>▲</span></div>
+    <div class='indicator'><span>▲</span></div>
+    <div class='pile' id="a2"></div>
+  </div>
+  <div class='row'>
+    <div class='pile' id="d1"></div>
+    <div class='indicator'><span>▼</span></div>
+    <div class='indicator'><span>▼</span></div>
+    <div class='pile' id="d2"></div>
+  </div>
+  <center><div id="hand"></div></center>
   <center><button id='undo'>undo (<span id='undocount'>0</span>)</button></center>
   <script src='dist.js'></script>
 </body>

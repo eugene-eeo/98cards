@@ -47,7 +47,6 @@ var RED = '#c23b22';
 var palette = shuffle([
     [YELLOW, RED],
     [YELLOW, BLUE],
-    ['#cdc6a5', '#6f9283'],
     ['#e5d0cc', '#7f7b82'],
 ])[0];
 var lo = palette[0];
