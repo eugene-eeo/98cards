@@ -94,3 +94,11 @@ updateNumbers();
 $.el('#undo').addEventListener('click', function() {
     game.undo();
 });
+
+$.el('#help').addEventListener('click', function() {
+    $.el('#help-dialog').classList.remove('hidden');
+});
+
+$.el('#close-help').addEventListener('click', function() {
+    $.el('#help-dialog').classList.add('hidden');
+});

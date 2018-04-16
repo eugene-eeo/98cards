@@ -32,12 +32,12 @@ h2, h3 {
   text-align: center;
 }
 
-h2 { margin-bottom: 0; }
-h3 { margin-top: 0; }
+h2 { margin: 0; }
+h3 { margin: 0 0 0.5em 0; }
 
 body {
   width: 12em;
-  margin: 2em auto;
+  margin: 1.5em auto;
   font-size: 1.5em;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: #fdfdfd;
@@ -67,7 +67,7 @@ body {
   text-align: center;
 }
 
-#undo {
+button {
   font: inherit;
   border: 0;
   background-color: #fff;
@@ -101,6 +101,20 @@ body {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none;
 }
+#help-dialog {
+  font-size: 0.8em;
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  border: 2px solid #000;
+  width: calc(40% - 2em);
+  background-color: #fdfdfd;
+  padding: 1em;
+  text-align: center;
+}
+.hidden { display: none; }
+#close-help { color: #ff392e; }
+#close-help:hover { cursor: pointer; }
   </style>
 </head>
 <body>
@@ -120,5 +134,19 @@ body {
   </div>
   <div id="hand"></div>
   <button id='undo'>⟲ undo</button>
+  <button id='help' class='enabled'>? help</button>
+  <div id='help-dialog' class='hidden'>
+<p>
+The goal is to place all 98 cards in 4 piles.
+<p>
+There are 2 ascending (▲) and descending (▼) piles.
+You can only place cards in ascending order in ascending piles –
+similarly for descending piles.
+<p>
+However, you can go in the other direction if
+the difference between the two cards is exactly 10.
+</p>
+  <button id='close-help'>✕ done</button>
+  </div>
   <script src='dist.js'></script>
 </body>
