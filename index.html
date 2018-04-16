@@ -1,0 +1,110 @@
+<html>
+<head>
+  <meta charset="utf8"/>
+  <title>99 cards</title>
+  <style>
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  opacity: 0.8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  filter: alpha(opacity=80);
+}
+.gu-hide {
+  display: none !important;
+}
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+.gu-transit {
+  opacity: 0.2;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+  filter: alpha(opacity=20);
+}
+
+h2 {
+  text-align: center;
+    margin-bottom: 0;
+}
+
+body {
+  width: 12em;
+  margin: 2em auto;
+  font-size: 1.5em;
+  font-family: sans-serif;
+}
+
+table, td, tr {
+  font: inherit;
+}
+
+.pile {
+  width: 3em;
+  height: 4.3em;
+  border: 2px solid #999;
+  border-radius: 5px;
+}
+
+#hand {
+  margin-top: 1em;
+  padding-top: 0.2em;
+  width: 12em;
+  border-top: 2px solid #999;
+}
+
+.card {
+  border: 2px solid #000;
+  border-radius: 5px;
+  font-weight: bold;
+  width: 2em;
+  height: 3.33em;
+  padding: 0.2em;
+  margin: 0.2em;
+  display: inline-block;
+}
+
+.indicator {
+  color: #999;
+  font-weight: bold;
+}
+
+.space {
+  width: 2.9em;
+  display: block;
+}
+
+h3 {
+  text-align: center;
+  margin-top: 0;
+}
+  </style>
+</head>
+<body>
+  <h2><span id='remaining'></span> cards</h2>
+  <h3 id='score'>0</h3>
+  <table>
+    <tr>
+      <td><div class='pile' id="asc-1"></div></td>
+      <td><span class='indicator'>▲</span></td>
+      <td><span class='space'></span></td>
+      <td><span class='indicator'>▲</span></td>
+      <td><div class='pile' id="asc-2"></div></td>
+    </tr>
+    <tr>
+      <td><div class='pile' id="dsc-1"></div>
+      <td><span class='indicator'>▼</span></td>
+      <td><span class='space'></span></td>
+      <td><span class='indicator'>▼</span></td>
+      <td><div class='pile' id="dsc-2"></div></td>
+    </tr>
+  </table>
+  <div id="hand"></div>
+  <script src='dragula.min.js'></script>
+  <script src='nut.min.js'></script>
+  <script src='korah.min.js'></script>
+  <script src='app.js'></script>
+</body>
