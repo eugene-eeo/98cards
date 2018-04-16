@@ -8,8 +8,10 @@ var drake = dragula([
     $.el('#d1'),
     $.el('#d2'),
 ], {
-    moves: (_, target) => target === hand,
-    accepts: (card, pile) => {
+    moves: function(_, target) {
+        return target === hand;
+    },
+    accepts: function(card, pile) {
         if (pile === hand) {
             return true;
         }
@@ -17,7 +19,7 @@ var drake = dragula([
     },
 });
 
-drake.on('drop', (top, target) => {
+drake.on('drop', function(top, target) {
     if (target === hand) {
         return;
     }
@@ -28,12 +30,12 @@ drake.on('drop', (top, target) => {
     updateNumbers();
 });
 
-drake.on('over', (card, pile) => {
+drake.on('over', function(card, pile) {
     var top = $.el('.top', pile);
     if (top) top.style.display = 'none';
 });
 
-drake.on('out', (card, pile) => {
+drake.on('out', function(card, pile) {
     var top = $.el('.top', pile);
     if (top) top.style.display = 'inline-block';
 });
@@ -42,9 +44,15 @@ var BLUE = '#4682b4';
 var YELLOW = '#fde396';
 var RED = '#c23b22';
 
-var palette = shuffle([[YELLOW, RED], [YELLOW, BLUE], [BLUE, RED]])[0];
-var hi = palette[1];
+var palette = shuffle([
+    [YELLOW, RED],
+    [YELLOW, BLUE],
+    [BLUE, RED],
+    ['#cdc6a5', '#6f9283'],
+    ['#e5d0cc', '#7f7b82'],
+])[0];
 var lo = palette[0];
+var hi = palette[1];
 
 function lerpColor(a, b, amount) { 
     var ah = parseInt(a.replace(/#/g, ''), 16),
@@ -72,23 +80,22 @@ function updateNumbers() {
 }
 
 var game = new Game({
-    newCards: (a, b) => {
+    newCards: function(a, b) {
         hand.appendChild(drawCard(a));
         hand.appendChild(drawCard(b));
     },
-    undo: (removed, score, id, pile) => {
-        var el = $.el('#'+id);
-        el.innerHTML = '';
-        if (pile.length > 0) {
-            var top = drawCard(pile[pile.length - 1]);
+    undo: function(prevTop, score, id, newTop) {
+        var pile = $.el('#'+id);
+        pile.innerHTML = '';
+        if (newTop !== null) {
+            var top = drawCard(newTop);
             top.classList.add('top');
-            el.appendChild(top);
+            pile.appendChild(top);
         }
-        hand.appendChild(drawCard(removed));
+        hand.appendChild(drawCard(prevTop));
         updateNumbers();
     }
 });
-game.hand.forEach(card => hand.appendChild(drawCard(card)));
 updateNumbers();
 
 $.el('#undo').addEventListener('click', function() {

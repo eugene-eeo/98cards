@@ -39,40 +39,40 @@ function lessThan(a, b) {
 
 function Game(handlers) {
     this.score = 0;
-    this.t = 0;
-    this.a1 = [];
-    this.a2 = [];
-    this.d1 = [];
-    this.d2 = [];
+    this.t = 0;     // move counter (time)
+    this.a1 = null; // top of asc. deck 1
+    this.a2 = null;
+    this.d1 = null; // top of dsc. deck 1
+    this.d2 = null;
+    this.hand = 0;  // amount of cards at hand
     this.deck = shuffle(range(99));
-    this.hand = [];
-    for (var i = 0; i < 8; i++) {
-        this.hand.push(this.deck.pop());
+    this.handlers = handlers;
+    for (var i = 0; i < 4; i++) {
+        this.draw2();
     }
     this.undoStack = [];
-    this.handlers = handlers;
 }
 
 Game.prototype = {
+    draw2: function() {
+        var a = this.deck.pop();
+        var b = this.deck.pop();
+        this.handlers.newCards(a, b);
+        this.hand += 2;
+    },
+
     remaining: function() {
-        return this.deck.length + this.hand.length;
+        return this.deck.length + this.hand;
     },
 
     accepts: function(id, card) {
-        var pile = this[id];
-        if (pile.length === 0) {
+        var top = this[id];
+        if (top === null) {
             return true;
         }
-        var top = pile[pile.length-1];
-        switch (id) {
-            case 'a1':
-            case 'a2':
-                return lessThan(top, card);
-            case 'd1':
-            case 'd2':
-            default:
-                return lessThan(card, top);
-        }
+        return (id === 'a1' || id === 'a2')
+            ? lessThan(top, card)
+            : lessThan(card, top);
     },
 
     scoreOf: function(diff) {
@@ -80,29 +80,23 @@ Game.prototype = {
     },
 
     move: function(id, card) {
-        var pile = this[id];
-        this.hand.splice(this.hand.indexOf(card), 1);
         if (!this.accepts(id, card)) {
             return;
         }
+        var top = this[id];
         this.undoStack.push({
-            t:     this.t,
             score: this.score,
-            hand:  this.hand.slice(),
             id:    id,
-            pile:  pile.slice(),
+            top:   top,
             card:  card,
         });
         this.t++;
-        this.score += this.scoreOf(card - (pile[pile.length - 1] || 0));
-        pile.push(card);
+        this.hand--;
+        this.score += this.scoreOf(card - (top || 0));
+        this[id] = card;
         if (this.t % 2 === 0 && this.deck.length > 0) {
             this.undoStack = [];
-            var a = this.deck.pop();
-            var b = this.deck.pop();
-            this.hand.push(a);
-            this.hand.push(b);
-            this.handlers.newCards(a, b);
+            this.draw2();
         }
     },
 
@@ -115,11 +109,16 @@ Game.prototype = {
             return;
         }
         var s = this.undoStack.pop();
-        this.t = s.t;
+        this.t--;
+        this.hand++;
         this.score = s.score;
-        this.hand = s.hand;
-        this[s.id] = s.pile;
-        this.handlers.undo(s.card, s.score, s.id, s.pile);
+        this[s.id] = s.top;
+        this.handlers.undo(
+            s.card,
+            s.score,
+            s.id,
+            s.top
+        );
     }
 };
 $ = nut;
@@ -132,8 +131,10 @@ var drake = dragula([
     $.el('#d1'),
     $.el('#d2'),
 ], {
-    moves: (_, target) => target === hand,
-    accepts: (card, pile) => {
+    moves: function(_, target) {
+        return target === hand;
+    },
+    accepts: function(card, pile) {
         if (pile === hand) {
             return true;
         }
@@ -141,7 +142,7 @@ var drake = dragula([
     },
 });
 
-drake.on('drop', (top, target) => {
+drake.on('drop', function(top, target) {
     if (target === hand) {
         return;
     }
@@ -152,12 +153,12 @@ drake.on('drop', (top, target) => {
     updateNumbers();
 });
 
-drake.on('over', (card, pile) => {
+drake.on('over', function(card, pile) {
     var top = $.el('.top', pile);
     if (top) top.style.display = 'none';
 });
 
-drake.on('out', (card, pile) => {
+drake.on('out', function(card, pile) {
     var top = $.el('.top', pile);
     if (top) top.style.display = 'inline-block';
 });
@@ -166,9 +167,15 @@ var BLUE = '#4682b4';
 var YELLOW = '#fde396';
 var RED = '#c23b22';
 
-var palette = shuffle([[YELLOW, RED], [YELLOW, BLUE], [BLUE, RED]])[0];
-var hi = palette[1];
+var palette = shuffle([
+    [YELLOW, RED],
+    [YELLOW, BLUE],
+    [BLUE, RED],
+    ['#cdc6a5', '#6f9283'],
+    ['#e5d0cc', '#7f7b82'],
+])[0];
 var lo = palette[0];
+var hi = palette[1];
 
 function lerpColor(a, b, amount) { 
     var ah = parseInt(a.replace(/#/g, ''), 16),
@@ -196,23 +203,22 @@ function updateNumbers() {
 }
 
 var game = new Game({
-    newCards: (a, b) => {
+    newCards: function(a, b) {
         hand.appendChild(drawCard(a));
         hand.appendChild(drawCard(b));
     },
-    undo: (removed, score, id, pile) => {
-        var el = $.el('#'+id);
-        el.innerHTML = '';
-        if (pile.length > 0) {
-            var top = drawCard(pile[pile.length - 1]);
+    undo: function(prevTop, score, id, newTop) {
+        var pile = $.el('#'+id);
+        pile.innerHTML = '';
+        if (newTop !== null) {
+            var top = drawCard(newTop);
             top.classList.add('top');
-            el.appendChild(top);
+            pile.appendChild(top);
         }
-        hand.appendChild(drawCard(removed));
+        hand.appendChild(drawCard(prevTop));
         updateNumbers();
     }
 });
-game.hand.forEach(card => hand.appendChild(drawCard(card)));
 updateNumbers();
 
 $.el('#undo').addEventListener('click', function() {
