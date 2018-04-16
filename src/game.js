@@ -59,7 +59,7 @@ Game.prototype = {
     },
 
     scoreOf: function(diff) {
-        return Math.abs(diff);
+        return Math.floor(1 + this.t / 25) * Math.abs(diff);
     },
 
     move: function(id, card) {
