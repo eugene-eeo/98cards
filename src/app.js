@@ -40,17 +40,8 @@ drake.on('out', function(card, pile) {
     if (top) top.style.display = 'inline-block';
 });
 
-var BLUE = '#4682b4';
-var YELLOW = '#fde396';
-var RED = '#c23b22';
-
-var palette = shuffle([
-    [YELLOW, RED],
-    [YELLOW, BLUE],
-    ['#e5d0cc', '#7f7b82'],
-])[0];
-var lo = palette[0];
-var hi = palette[1];
+var lo = '#fde396';
+var hi = '#4682b4';
 
 function lerpColor(a, b, amount) { 
     var ah = parseInt(a.replace(/#/g, ''), 16),
@@ -74,7 +65,11 @@ function drawCard(value) {
 function updateNumbers() {
     $.el('#score').textContent = game.score;
     $.el('#remaining').textContent = game.remaining();
-    $.el('#undocount').textContent = game.undoStack.length;
+    if (game.canUndo()) {
+        $.el('#undo').classList.add('enabled');
+    } else {
+        $.el('#undo').classList.remove('enabled');
+    }
 }
 
 var game = new Game({
