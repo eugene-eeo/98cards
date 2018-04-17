@@ -73,7 +73,7 @@ var game = new Game({
             hand.appendChild(drawCard(cards[i]));
         }
     },
-    undo: function(prevTop, score, id, newTop) {
+    undo: function(prevTop, id, newTop) {
         var pile = $.el('#' + id);
         pile.innerHTML = '';
         if (newTop !== null) {

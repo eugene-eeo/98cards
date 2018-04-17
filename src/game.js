@@ -97,11 +97,6 @@ Game.prototype = {
         this.hand++;
         this.score = s.score;
         this[s.id] = s.top;
-        this.handlers.undo(
-            s.card,
-            s.score,
-            s.id,
-            s.top
-        );
+        this.handlers.undo(s.card, s.id, s.top);
     }
 };
