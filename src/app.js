@@ -68,7 +68,7 @@ function updateNumbers() {
     $.el('#score').textContent = game.score;
     $.el('#remaining').textContent = game.remaining();
     $.el('#undo').classList.toggle('enabled', game.canUndo());
-    var cards = []
+    var cards = [];
     for (var i = 0; i < hand.children.length; i++) {
         cards.push(+hand.children[i].textContent);
     }
