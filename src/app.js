@@ -40,6 +40,9 @@ drake.on('out',    changeTopCardStyle('inline-block'));
 
 var LO = '#fde396';
 var HI = '#4682b4';
+//var LO = '#EFECDD';
+//var HI = '#F0C859';
+
 
 function lerpColor(a, b, amount) { 
     var ah = parseInt(a.replace(/#/g, ''), 16),
@@ -65,6 +68,19 @@ function updateNumbers() {
     $.el('#score').textContent = game.score;
     $.el('#remaining').textContent = game.remaining();
     $.el('#undo').classList.toggle('enabled', game.canUndo());
+    var cards = []
+    for (var i = 0; i < hand.children.length; i++) {
+        cards.push(+hand.children[i].textContent);
+    }
+    if (!game.hasMoves(cards)) {
+        setTimeout(function() {
+            $.el('#main').classList.add('game-over');
+            var dialog = $.el('#gameover');
+            dialog.classList.remove('hidden');
+            $.el('.score', dialog).textContent = game.score;
+            $.el('.remaining', dialog).textContent = game.remaining();
+        }, 0);
+    }
 }
 
 var game = new Game({
@@ -77,9 +93,9 @@ var game = new Game({
         var pile = $.el('#' + id);
         pile.innerHTML = '';
         if (newTop !== null) {
-            var top = drawCard(newTop);
-            top.classList.add('top');
-            pile.appendChild(top);
+            var card = drawCard(newTop);
+            card.classList.add('top');
+            pile.appendChild(card);
         }
         hand.appendChild(drawCard(prevTop));
         updateNumbers();

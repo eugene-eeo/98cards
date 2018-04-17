@@ -98,5 +98,21 @@ Game.prototype = {
         this.score = s.score;
         this[s.id] = s.top;
         this.handlers.undo(s.card, s.id, s.top);
+    },
+
+    hasMoves: function(hand) {
+        if (!this.a1 || !this.a2 || !this.d1 || !this.d2) {
+            return true;
+        }
+        for (var i = 0; i < hand.length; i++) {
+            var x = hand[i];
+            if (lessThan(this.a1, x)
+                || lessThan(this.a2, x)
+                || lessThan(x, this.d1)
+                || lessThan(x, this.d2)) {
+                return true;
+            }
+        }
+        return false;
     }
 };

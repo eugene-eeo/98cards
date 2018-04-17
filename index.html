@@ -43,6 +43,10 @@ body {
   background-color: #fdfdfd;
 }
 
+#main.game-over {
+  opacity: 0.2;
+}
+
 .pile {
   width: 25%;
   height: 4.3em;
@@ -113,29 +117,44 @@ button {
   text-align: center;
   border-radius: 4px;
 }
+#gameover {
+  position: absolute;
+  top: 20%;
+  left: 35%;
+  border: 2px solid #000;
+  width: calc(30% - 4px - 2em);
+  padding: 1em;
+  background-color: #eee;
+  border-radius: 4px;
+}
+#gameover .score {
+  font-size: 2em;
+}
 .hidden { display: none; }
 #close-help { color: #ff392e; }
 #close-help:hover { cursor: pointer; }
   </style>
 </head>
 <body>
-  <h2><span id='remaining'></span> cards</h2>
-  <h3><span id='score'>0</span></h3>
-  <div class='row'>
-    <div class='pile' id="a1"></div>
-    <div class='indicator'><span>▲</span></div>
-    <div class='indicator'><span>▲</span></div>
-    <div class='pile' id="a2"></div>
+  <div id='main'>
+    <h2><span id='remaining'></span> cards</h2>
+    <h3><span id='score'>0</span></h3>
+    <div class='row'>
+      <div class='pile' id="a1"></div>
+      <div class='indicator'><span>▲</span></div>
+      <div class='indicator'><span>▲</span></div>
+      <div class='pile' id="a2"></div>
+    </div>
+    <div class='row'>
+      <div class='pile' id="d1"></div>
+      <div class='indicator'><span>▼</span></div>
+      <div class='indicator'><span>▼</span></div>
+      <div class='pile' id="d2"></div>
+    </div>
+    <div id="hand"></div>
+    <button id='undo'>⟲ undo</button>
+    <button id='help' class='enabled'>? help</button>
   </div>
-  <div class='row'>
-    <div class='pile' id="d1"></div>
-    <div class='indicator'><span>▼</span></div>
-    <div class='indicator'><span>▼</span></div>
-    <div class='pile' id="d2"></div>
-  </div>
-  <div id="hand"></div>
-  <button id='undo'>⟲ undo</button>
-  <button id='help' class='enabled'>? help</button>
   <div id='help-dialog' class='hidden'>
 <p>
 The goal is to place all 98 cards in 4 piles.
@@ -148,6 +167,12 @@ However, you can go in the other direction if
 the difference between the two cards is exactly 10.
 </p>
   <button id='close-help'>✕ done</button>
+  </div>
+  <div id='gameover' class='hidden'>
+<h2>Game Over</h2>
+<h3 class='score'></h3>
+<h3><span class='remaining'></span> cards remaining.</h3>
+<center><small>Reload the page to play again.</small></center>
   </div>
   <script src='dist.js'></script>
 </body>
