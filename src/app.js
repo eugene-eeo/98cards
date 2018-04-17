@@ -1,47 +1,45 @@
 $ = nut;
 var hand = $.el('#hand');
+var piles = $('.pile');
+piles.push(hand);
 
-var drake = dragula([
-    hand, 
-    $.el('#a1'),
-    $.el('#a2'),
-    $.el('#d1'),
-    $.el('#d2'),
-], {
+var drake = dragula(piles, {
     moves: function(_, target) {
         return target === hand;
     },
     accepts: function(card, pile) {
-        if (pile === hand) {
-            return true;
-        }
-        return game.accepts(pile.id, +card.textContent);
+        // always allow shuffling the hand
+        // but check if card can be placed on top of one pile
+        return (pile === hand) || game.accepts(pile.id, +card.textContent);
     },
 });
 
-drake.on('drop', function(top, target) {
+drake.on('drop', function(card, target) {
     if (target === hand) {
         return;
     }
     target.innerHTML = "";
-    target.appendChild(top);
-    top.classList.add('top');
-    game.move(target.id, +top.textContent);
+    target.appendChild(card);
+    card.classList.add('top');
+    game.move(target.id, +card.textContent);
     updateNumbers();
 });
 
-drake.on('over', function(card, pile) {
-    var top = $.el('.top', pile);
-    if (top) top.style.display = 'none';
-});
+function changeTopCardStyle(style) {
+    return function(card, pile) {
+        var top = $.el('.top', pile);
+        if (top) {
+            top.style.display = style;
+        }
+    };
+}
 
-drake.on('out', function(card, pile) {
-    var top = $.el('.top', pile);
-    if (top) top.style.display = 'inline-block';
-});
+drake.on('over',   changeTopCardStyle('none'));
+drake.on('shadow', changeTopCardStyle('none'));
+drake.on('out',    changeTopCardStyle('inline-block'));
 
-var lo = '#fde396';
-var hi = '#4682b4';
+var LO = '#fde396';
+var HI = '#4682b4';
 
 function lerpColor(a, b, amount) { 
     var ah = parseInt(a.replace(/#/g, ''), 16),
@@ -56,29 +54,27 @@ function lerpColor(a, b, amount) {
 }
 
 function drawCard(value) {
-    return kr.div({
-        'class': 'card',
-        'style': 'background-color: '+ lerpColor(lo, hi, (value-2)/96),
-        }, value);
+    var div = document.createElement('div');
+    div.textContent = value;
+    div.classList.add('card');
+    div.style.backgroundColor = lerpColor(LO, HI, (value-2)/96);
+    return div;
 }
 
 function updateNumbers() {
     $.el('#score').textContent = game.score;
     $.el('#remaining').textContent = game.remaining();
-    if (game.canUndo()) {
-        $.el('#undo').classList.add('enabled');
-    } else {
-        $.el('#undo').classList.remove('enabled');
-    }
+    $.el('#undo').classList.toggle('enabled', game.canUndo());
 }
 
 var game = new Game({
-    newCards: function(a, b) {
-        hand.appendChild(drawCard(a));
-        hand.appendChild(drawCard(b));
+    newCards: function(cards) {
+        for (var i = 0; i < cards.length; i++) {
+            hand.appendChild(drawCard(cards[i]));
+        }
     },
     undo: function(prevTop, score, id, newTop) {
-        var pile = $.el('#'+id);
+        var pile = $.el('#' + id);
         pile.innerHTML = '';
         if (newTop !== null) {
             var top = drawCard(newTop);
@@ -89,6 +85,7 @@ var game = new Game({
         updateNumbers();
     }
 });
+
 updateNumbers();
 
 $.el('#undo').addEventListener('click', function() {

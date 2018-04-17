@@ -22,25 +22,24 @@ function lessThan(a, b) {
 
 function Game(handlers) {
     this.score = 0;
-    this.t = 0;     // move counter (time)
-    this.a1 = null; // top of asc. deck 1
-    this.a2 = null;
-    this.d1 = null; // top of dsc. deck 1
-    this.d2 = null;
-    this.hand = 0;  // amount of cards at hand
+    this.t = 0;                     // move counter (time)
+    this.a1 = null; this.a2 = null; // top of asc. decks
+    this.d1 = null; this.d2 = null; // top of dsc. deck 1
+    this.hand = 0;                  // amount of cards at hand
     this.deck = shuffle(range(99));
     this.handlers = handlers;
+    this.undoStack = [];
     for (var i = 0; i < 4; i++) {
         this.draw2();
     }
-    this.undoStack = [];
 }
 
 Game.prototype = {
     draw2: function() {
-        var a = this.deck.pop();
-        var b = this.deck.pop();
-        this.handlers.newCards(a, b);
+        this.handlers.newCards([
+            this.deck.pop(),
+            this.deck.pop(),
+        ]);
         this.hand += 2;
     },
 
@@ -59,7 +58,9 @@ Game.prototype = {
     },
 
     scoreOf: function(diff) {
-        return Math.floor(1 + this.t / 25) * Math.abs(diff);
+        var d = Math.abs(diff);
+        var s = Math.floor(1 + this.t / 25) * d;
+        return (d === 10) ? 2*s : s;
     },
 
     move: function(id, card) {
