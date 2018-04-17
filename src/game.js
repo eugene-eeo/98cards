@@ -6,14 +6,15 @@ function range(n) {
     return arr;
 }
 
-function shuffle(xs) {
-    for (var i = 0; i < xs.length; i++) {
-        var j = Math.floor(xs.length * Math.random());
-        var tmp = xs[i];
-        xs[i] = xs[j];
-        xs[j] = tmp;
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
     }
-    return xs;
+    return a;
 }
 
 function lessThan(a, b) {

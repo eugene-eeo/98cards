@@ -73,13 +73,7 @@ function updateNumbers() {
         cards.push(+hand.children[i].textContent);
     }
     if (!game.hasMoves(cards)) {
-        setTimeout(function() {
-            $.el('#main').classList.add('game-over');
-            var dialog = $.el('#gameover');
-            dialog.classList.remove('hidden');
-            $.el('.score', dialog).textContent = game.score;
-            $.el('.remaining', dialog).textContent = game.remaining();
-        }, 0);
+        setTimeout(gameOver, 0);
     }
 }
 
@@ -103,6 +97,14 @@ var game = new Game({
 });
 
 updateNumbers();
+
+function gameOver() {
+    $.el('#main').classList.add('game-over');
+    var dialog = $.el('#gameover');
+    dialog.classList.remove('hidden');
+    $.el('.score', dialog).textContent = game.score;
+    $.el('.remaining', dialog).textContent = game.remaining();
+}
 
 $.el('#undo').addEventListener('click', function() {
     game.undo();
