@@ -60,7 +60,7 @@ Game.prototype = {
 
     scoreOf: function(diff) {
         var d = Math.abs(diff);
-        var s = Math.floor(1 + this.t / 25) * d;
+        var s = this.t * d;
         return (d === 10) ? 2*s : s;
     },
 
