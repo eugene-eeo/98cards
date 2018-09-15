@@ -18,6 +18,7 @@ function shuffle(a) {
 }
 
 function lessThan(a, b) {
+    if (a === null || b === null) return true;
     return (a < b) || (a - b === 10);
 }
 
@@ -26,7 +27,7 @@ function Game(handlers) {
     this.t = 0;                     // move counter (time)
     this.a1 = null; this.a2 = null; // top of asc. decks
     this.d1 = null; this.d2 = null; // top of dsc. deck 1
-    this.hand = 0;                  // amount of cards at hand
+    this.hand = [];                 // cards at hand
     this.deck = shuffle(range(99));
     this.handlers = handlers;
     this.undoStack = [];
@@ -37,22 +38,19 @@ function Game(handlers) {
 
 Game.prototype = {
     draw2: function() {
-        this.handlers.newCards([
-            this.deck.pop(),
-            this.deck.pop(),
-        ]);
-        this.hand += 2;
+        var a = this.deck.pop();
+        var b = this.deck.pop();
+        this.hand.push(a);
+        this.hand.push(b);
+        this.handlers.newCards([a, b]);
     },
 
     remaining: function() {
-        return this.deck.length + this.hand;
+        return this.deck.length + this.hand.length;
     },
 
     accepts: function(id, card) {
         var top = this[id];
-        if (top === null) {
-            return true;
-        }
         return (id === 'a1' || id === 'a2')
             ? lessThan(top, card)
             : lessThan(card, top);
@@ -76,7 +74,7 @@ Game.prototype = {
             card:  card,
         });
         this.t++;
-        this.hand--;
+        this.hand.splice(this.hand.indexOf(card), 1);
         this.score += this.scoreOf(card - (top || 0));
         this[id] = card;
         if (this.t % 2 === 0 && this.deck.length > 0) {
@@ -95,25 +93,20 @@ Game.prototype = {
         }
         var s = this.undoStack.pop();
         this.t--;
-        this.hand++;
+        this.hand.push(s.card);
         this.score = s.score;
         this[s.id] = s.top;
         this.handlers.undo(s.card, s.id, s.top);
+        this.handlers.newCards([s.card]);
     },
 
-    hasMoves: function(hand) {
-        if (!this.a1 || !this.a2 || !this.d1 || !this.d2) {
-            return true;
-        }
-        for (var i = 0; i < hand.length; i++) {
-            var x = hand[i];
-            if (lessThan(this.a1, x)
-                || lessThan(this.a2, x)
-                || lessThan(x, this.d1)
-                || lessThan(x, this.d2)) {
-                return true;
-            }
-        }
-        return false;
+    hasMoves: function() {
+        var self = this;
+        return this.canUndo() || this.hand.find(function(x) {
+            return lessThan(self.a1, x)
+                || lessThan(self.a2, x)
+                || lessThan(x, self.d1)
+                || lessThan(x, self.d2);
+        });
     }
 };

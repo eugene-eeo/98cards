@@ -91,7 +91,6 @@ var game = new Game({
             card.classList.add('top');
             pile.appendChild(card);
         }
-        hand.appendChild(drawCard(prevTop));
         updateNumbers();
     }
 });
