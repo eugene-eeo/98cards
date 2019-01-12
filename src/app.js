@@ -44,7 +44,7 @@ var HI = '#4682b4';
 //var HI = '#F0C859';
 
 
-function lerpColor(a, b, amount) { 
+function lerpColor(a, b, amount) {
     var ah = parseInt(a.replace(/#/g, ''), 16),
         ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
         bh = parseInt(b.replace(/#/g, ''), 16),
